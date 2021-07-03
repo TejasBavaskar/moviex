@@ -115,8 +115,10 @@ function setGenre() {
     tagElement.addEventListener('click', () => {
       if(selectedTags.includes(tagElement.id)) {
         selectedTags.splice(selectedTags.indexOf(tagElement.id), 1);
+        tagElement.classList.remove('selected');
       } else {
         selectedTags.push(tagElement.id);
+        tagElement.classList.add('selected');
       }
       console.log('selectedTags: ', selectedTags);
       const url = `${API_URL}&api_key=${API_KEY}&with_genres=${encodeURI(selectedTags.join(','))}`;
