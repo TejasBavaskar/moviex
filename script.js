@@ -3,10 +3,17 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
-fetchData()
+const form = document.getElementById('form');
+const searchBar = document.getElementById('searchbar');
 
-async function fetchData() {
-  const url = `${API_URL}&api_key=${API_KEY}`;
+initialize();
+
+function initialize() {
+  const url = `${BASE_URL}/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}`;
+  fetchData(url);
+}
+
+async function fetchData(url) {
   let moviesData = [];
 
   await fetch(url)
@@ -25,7 +32,6 @@ async function fetchData() {
 }
 
 function showMovies(movieData) {
-  console.log('In showmovie fun');
   const mainBody = document.querySelector('.main-body');
   mainBody.innerHTML = '';
   movieData.forEach(item => {
@@ -57,3 +63,17 @@ function getColor(rating) {
     return 'red';
   }
 }
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const searchTerm = searchBar.value;
+  if(!searchTerm) {
+    console.log('No search term');
+    initialize();
+    return;
+  }
+
+  const url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchTerm}`;
+  fetchData(url);
+})
