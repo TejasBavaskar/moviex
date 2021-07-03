@@ -58,6 +58,24 @@ header {
 }
 /* ----------------- Header End ----------------- */
 
+/* ----------------- Genre Filter Start ----------------- */
+.tags-filter {
+  width: 80%;
+  margin: 10px auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tag {
+  padding: 0.4rem 1rem;
+  background-color: yellow;
+  margin: 1rem;
+  border-radius: 1.5rem;
+  display: inline-block;
+  cursor: pointer;
+}
+
 /* -----------------  Main Body Start ----------------- */
 .main-body {
   display: flex;

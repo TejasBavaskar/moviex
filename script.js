@@ -7,19 +7,127 @@ const homeBtn = document.querySelector('.home-btn');
 const form = document.getElementById('form');
 const searchBar = document.getElementById('searchbar');
 
+const genreData = [
+    {
+      "id": 28,
+      "name": "Action"
+    },
+    {
+      "id": 12,
+      "name": "Adventure"
+    },
+    {
+      "id": 16,
+      "name": "Animation"
+    },
+    {
+      "id": 35,
+      "name": "Comedy"
+    },
+    {
+      "id": 80,
+      "name": "Crime"
+    },
+    {
+      "id": 99,
+      "name": "Documentary"
+    },
+    {
+      "id": 18,
+      "name": "Drama"
+    },
+    {
+      "id": 10751,
+      "name": "Family"
+    },
+    {
+      "id": 14,
+      "name": "Fantasy"
+    },
+    {
+      "id": 36,
+      "name": "History"
+    },
+    {
+      "id": 27,
+      "name": "Horror"
+    },
+    {
+      "id": 10402,
+      "name": "Music"
+    },
+    {
+      "id": 9648,
+      "name": "Mystery"
+    },
+    {
+      "id": 10749,
+      "name": "Romance"
+    },
+    {
+      "id": 878,
+      "name": "Science Fiction"
+    },
+    {
+      "id": 10770,
+      "name": "TV Movie"
+    },
+    {
+      "id": 53,
+      "name": "Thriller"
+    },
+    {
+      "id": 10752,
+      "name": "War"
+    },
+    {
+      "id": 37,
+      "name": "Western"
+    }
+  ];
+let selectedTags = [];
+
 initialize();
 
 homeBtn.addEventListener('click', () => {
   initialize();
   searchBar.value = '';
+  selectedTags = [];
 })
 
 function initialize() {
+  setGenre();
   const url = `${BASE_URL}/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}`;
-  fetchData(url);
+  fetchMovies(url);
 }
 
-async function fetchData(url) {
+function setGenre() {
+  console.log('genreData: ',genreData);
+  
+  const genreDiv = document.querySelector('.tags-filter');
+  genreDiv.innerHTML = '';
+  genreData.forEach(item => {
+    const tagElement = document.createElement('div');
+    tagElement.classList.add('tag');
+    tagElement.id = item.id;
+    tagElement.innerText = item.name;
+
+    tagElement.addEventListener('click', () => {
+      if(selectedTags.includes(tagElement.id)) {
+        selectedTags.splice(selectedTags.indexOf(tagElement.id), 1);
+      } else {
+        selectedTags.push(tagElement.id);
+      }
+      console.log('selectedTags: ', selectedTags);
+      const url = `${API_URL}&api_key=${API_KEY}&with_genres=${encodeURI(selectedTags.join(','))}`;
+      fetchMovies(url);
+    })
+
+    genreDiv.appendChild(tagElement);
+  })
+}
+
+async function fetchMovies(url) {
   let moviesData = [];
 
   await fetch(url)
@@ -89,5 +197,5 @@ form.addEventListener('submit', (event) => {
   }
 
   const url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchTerm}`;
-  fetchData(url);
+  fetchMovies(url);
 })
