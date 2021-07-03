@@ -93,7 +93,6 @@ initialize();
 homeBtn.addEventListener('click', () => {
   initialize();
   clearSearchBar();
-  clearTags();
 })
 
 function initialize() {
@@ -108,6 +107,10 @@ function clearSearchBar() {
 
 function clearTags() {
   selectedTags = [];
+  const tagList = document.querySelectorAll('.tag');
+  tagList.forEach(tag => {
+    tag.classList.remove('selected');
+  })
 }
 
 function setGenre() {
