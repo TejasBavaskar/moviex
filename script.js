@@ -2,6 +2,7 @@ const API_KEY = '4a0cc1cacd55ba6273a4a990097cfd4f';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+const NO_IMAGE_FOUND = 'https://www.windhorsepublications.com/wp-content/uploads/2019/11/image-coming-soon-placeholder-300x300.png';
 
 const homeBtn = document.querySelector('.home-btn');
 const form = document.getElementById('form');
@@ -91,14 +92,22 @@ initialize();
 
 homeBtn.addEventListener('click', () => {
   initialize();
-  searchBar.value = '';
-  selectedTags = [];
+  clearSearchBar();
+  clearTags();
 })
 
 function initialize() {
   setGenre();
   const url = `${BASE_URL}/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}`;
   fetchMovies(url);
+}
+
+function clearSearchBar() {
+  searchBar.value = '';
+}
+
+function clearTags() {
+  selectedTags = [];
 }
 
 function setGenre() {
@@ -113,6 +122,7 @@ function setGenre() {
     tagElement.innerText = item.name;
 
     tagElement.addEventListener('click', () => {
+      clearSearchBar();
       if(selectedTags.includes(tagElement.id)) {
         selectedTags.splice(selectedTags.indexOf(tagElement.id), 1);
         tagElement.classList.remove('selected');
@@ -152,11 +162,12 @@ function showMovies(movieData) {
   mainBody.innerHTML = '';
   movieData.forEach(item => {
     const {title, poster_path, vote_average, overview} = item;
+    const posterpath = poster_path ? IMAGE_BASE_URL + poster_path : NO_IMAGE_FOUND;
     const rateingColor = getColor(vote_average);
     const movieCard = document.createElement('div');
     movieCard.classList.add('movie-card');
     movieCard.innerHTML = `
-      <img src="${IMAGE_BASE_URL + poster_path}" alt="Movie">
+      <img src="${posterpath}" alt="Movie">
       <div class="movie-info">
         <h3>${title}</h3>
         <span class="${rateingColor}">${vote_average}</span>
@@ -190,7 +201,7 @@ function getColor(rating) {
 
 form.addEventListener('submit', (event) => {
   event.preventDefault();
-
+  clearTags();
   const searchTerm = searchBar.value;
   if(!searchTerm) {
     console.log('No search term');
