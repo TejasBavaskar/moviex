@@ -3,10 +3,16 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
+const homeBtn = document.querySelector('.home-btn');
 const form = document.getElementById('form');
 const searchBar = document.getElementById('searchbar');
 
 initialize();
+
+homeBtn.addEventListener('click', () => {
+  initialize();
+  searchBar.value = '';
+})
 
 function initialize() {
   const url = `${BASE_URL}/discover/movie?sort_by=popularity.desc&api_key=${API_KEY}`;
@@ -36,19 +42,27 @@ function showMovies(movieData) {
   mainBody.innerHTML = '';
   movieData.forEach(item => {
     const {title, poster_path, vote_average, overview} = item;
-
+    const rateingColor = getColor(vote_average);
     const movieCard = document.createElement('div');
     movieCard.classList.add('movie-card');
     movieCard.innerHTML = `
       <img src="${IMAGE_BASE_URL + poster_path}" alt="Movie">
       <div class="movie-info">
         <h3>${title}</h3>
-        <span class="${getColor(vote_average)}">${vote_average}</span>
+        <span class="${rateingColor}">${vote_average}</span>
       </div>
       <div class="movie-description">
         <h3>${title}</h3>
         <p>${overview}</p>
       </div>`;
+
+    movieCard.addEventListener('mouseover', () => {
+      movieCard.style.boxShadow = `0 4px 7px 0 white, 0 6px 25px 0 ${rateingColor}`;
+    })
+
+    movieCard.addEventListener('mouseout', () => {
+      movieCard.style.boxShadow = 'none';
+    })
 
     mainBody.appendChild(movieCard);
   });
