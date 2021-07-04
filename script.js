@@ -197,13 +197,20 @@ function showMovies(movieData) {
   movieData.forEach(item => {
     const {title, poster_path, vote_average, overview} = item;
     const posterpath = poster_path ? IMAGE_BASE_URL + poster_path : NO_IMAGE_FOUND;
+    let movieTitle = title;
+    if(movieTitle.length > 38) {
+      movieTitle = movieTitle.split('');
+      movieTitle.splice(32, movieTitle.length - 32);
+      movieTitle = movieTitle.join('') + '...';
+    }
+
     const rateingColor = getColor(vote_average);
     const movieCard = document.createElement('div');
     movieCard.classList.add('movie-card');
     movieCard.innerHTML = `
       <img src="${posterpath}" alt="Movie">
       <div class="movie-info">
-        <h3>${title}</h3>
+        <h3>${movieTitle}</h3>
         <span class="${rateingColor}">${vote_average}</span>
       </div>
       <div class="movie-description">
