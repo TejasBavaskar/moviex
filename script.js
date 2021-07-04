@@ -93,6 +93,7 @@ initialize();
 homeBtn.addEventListener('click', () => {
   initialize();
   clearSearchBar();
+  clearTags();
 })
 
 function initialize() {
@@ -157,7 +158,22 @@ async function fetchMovies(url) {
     console.log('Error in fetching movies data: '+ err);
   })
 
+  if(moviesData.length === 0) {
+    noMovies();
+    return;
+  }
   showMovies(moviesData);
+}
+
+function noMovies() {
+  const mainBody = document.querySelector('.main-body');
+  mainBody.innerHTML = '';
+  const noResultsDiv = document.createElement('div');
+  noResultsDiv.classList.add('no-movie');
+  noResultsDiv.innerHTML = `<img src="https://bsmedia.business-standard.com/_media/bs/theme/faq_view_all/images/no-result-found.png" alt="No Results Found">`;
+  mainBody.appendChild(noResultsDiv);
+  
+  return;
 }
 
 function showMovies(movieData) {
