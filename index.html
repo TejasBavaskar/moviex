@@ -25,6 +25,21 @@
     <div class="tag">action</div>
   </div>
 
+  <!-- The overlay -->
+  <div id="myNav" class="overlay">
+    <!-- Button to close the overlay navigation -->
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <!-- Overlay content -->
+    <div class="overlay-content" id="overlay-container">
+    </div>
+    <span class="arrow left-arrow" id="left-arrow">
+      <i data-feather="arrow-left-circle"></i>
+    </span>
+    <span class="arrow right-arrow" id="right-arrow">
+      <i data-feather="arrow-right-circle"></i>
+    </span>
+  </div>
+
   <!--Main Body-->
   <div class="main-body">
     <div class="movie-card">
@@ -75,5 +90,9 @@
   </div>
 
   <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <script>
+    feather.replace()
+  </script>
 </body>
 </html>

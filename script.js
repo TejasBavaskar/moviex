@@ -10,9 +10,13 @@ const searchBar = document.getElementById('searchbar');
 const prevPageBtn = document.getElementById('prev-page');
 const currentPageBtn = document.getElementById('current-page');
 const nextPageBtn = document.getElementById('next-page');
+const leftVideoArrow = document.getElementById('left-arrow');
+const rightVideoArrow = document.getElementById('right-arrow');
+
 let currentPageCount = 1;
 let totalPagesCount = 0;
-
+let activeVideoSlide = 0;
+let totalVideos = 0;
 const genreData = [
     {
       "id": 28,
@@ -195,7 +199,7 @@ function showMovies(movieData) {
   const mainBody = document.querySelector('.main-body');
   mainBody.innerHTML = '';
   movieData.forEach(item => {
-    const {title, poster_path, vote_average, overview} = item;
+    const {title, poster_path, vote_average, overview, id} = item;
     const posterpath = poster_path ? IMAGE_BASE_URL + poster_path : NO_IMAGE_FOUND;
     let movieTitle = title;
     if(movieTitle.length > 38) {
@@ -204,6 +208,14 @@ function showMovies(movieData) {
       movieTitle = movieTitle.join('') + '...';
     }
 
+    let movieOverview = overview;
+    if(movieOverview.length > 208) {
+      movieOverview = movieOverview.split('');
+      movieOverview.splice(205, movieOverview.length - 205);
+      movieOverview = movieOverview.join('') + '...';
+    }
+
+    const knowMoreBtnId = id;
     const rateingColor = getColor(vote_average);
     const movieCard = document.createElement('div');
     movieCard.classList.add('movie-card');
@@ -215,7 +227,8 @@ function showMovies(movieData) {
       </div>
       <div class="movie-description">
         <h3>${title}</h3>
-        <p>${overview}</p>
+        <p>${movieOverview}</p>
+        <button class="know-more" id="${knowMoreBtnId}"><span>Know More</span></button>
       </div>`;
 
     movieCard.addEventListener('mouseover', () => {
@@ -227,6 +240,12 @@ function showMovies(movieData) {
     })
 
     mainBody.appendChild(movieCard);
+
+    const knowMoreBtn = document.getElementById(knowMoreBtnId);
+    knowMoreBtn.addEventListener('click', () => {
+      console.log('Button clicked...', knowMoreBtnId);
+      openNav(knowMoreBtnId);
+    })
   });
 }
 
@@ -301,4 +320,81 @@ prevPageBtn.addEventListener('click', () => {
   if(currentPageCount <= totalPagesCount) {
     nextPageBtn.classList.remove('disabled');
   }
+})
+
+/* Open when someone clicks on the span element */
+function openNav(btnId) {
+  const url = `${BASE_URL}/movie/${btnId}/videos?api_key=${API_KEY}`;
+  fetch(url)
+  .then(res => res.json())
+  .then(videoData => {
+    console.log('videoData: ', videoData);
+    showVideos(videoData);
+  })
+  document.getElementById("myNav").style.width = "100%";
+}
+
+/* Close when someone clicks on the "x" symbol inside the overlay */
+function closeNav() {
+  document.getElementById("myNav").style.width = "0%";
+}
+
+function showVideos(videoData) {
+  const overlayContainer = document.getElementById('overlay-container');
+  if(videoData.results.length === 0) {
+    console.log('No videos found');
+    overlayContainer.innerHTML = '';
+    const noResultsDiv = document.createElement('div');
+    noResultsDiv.classList.add('no-movie');
+    noResultsDiv.style.position = 'relative';
+    noResultsDiv.style.left = '35%';
+    noResultsDiv.innerHTML = `<img src="https://bsmedia.business-standard.com/_media/bs/theme/faq_view_all/images/no-result-found.png" alt="No Results Found">`;
+    overlayContainer.appendChild(noResultsDiv);
+    return;
+  }
+
+  let embed = [];
+  videoData.results.forEach(video => {
+    let {name, site, key} = video;
+    if(site === "YouTube") {
+      embed.push(`<iframe class="embed" width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
+    }
+
+  })
+
+  overlayContainer.innerHTML = embed.join('');
+  activeVideoSlide = 0;
+  showVideoIframes();
+}
+
+function showVideoIframes() {
+  const embedVideoList = document.querySelectorAll('.embed');
+  totalVideos = embedVideoList.length;
+  embedVideoList.forEach((item, index) => {
+    if(activeVideoSlide === index) {
+      item.classList.remove('hide');
+      item.classList.add('show');
+    } else {
+      item.classList.remove('show');
+      item.classList.add('hide');
+    }
+  })
+}
+
+leftVideoArrow.addEventListener('click', () => {
+  if(activeVideoSlide > 0) {
+    activeVideoSlide--;
+  } else {
+    activeVideoSlide = totalVideos-1;
+  }
+  showVideoIframes();
+})
+
+rightVideoArrow.addEventListener('click', () => {
+  if(activeVideoSlide < totalVideos-1) {
+    activeVideoSlide++;
+  } else {
+    activeVideoSlide = 0;
+  }
+  showVideoIframes();
 })
