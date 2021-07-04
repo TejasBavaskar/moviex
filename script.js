@@ -7,6 +7,11 @@ const NO_IMAGE_FOUND = 'https://www.windhorsepublications.com/wp-content/uploads
 const homeBtn = document.querySelector('.home-btn');
 const form = document.getElementById('form');
 const searchBar = document.getElementById('searchbar');
+const prevPageBtn = document.getElementById('prev-page');
+const currentPageBtn = document.getElementById('current-page');
+const nextPageBtn = document.getElementById('next-page');
+let currentPageCount = 1;
+let totalPagesCount = 0;
 
 const genreData = [
     {
@@ -91,6 +96,9 @@ let selectedTags = [];
 initialize();
 
 homeBtn.addEventListener('click', () => {
+  currentPageCount = 1;
+  totalPagesCount = 0;
+  currentPageBtn.innerText = currentPageCount;
   initialize();
   clearSearchBar();
   clearTags();
@@ -115,8 +123,6 @@ function clearTags() {
 }
 
 function setGenre() {
-  console.log('genreData: ',genreData);
-  
   const genreDiv = document.querySelector('.tags-filter');
   genreDiv.innerHTML = '';
   genreData.forEach(item => {
@@ -152,7 +158,16 @@ async function fetchMovies(url) {
   })
   .then(data => {
     moviesData = data?.results;
-    console.log('MoviesData: ', moviesData);
+    totalPagesCount = data.total_pages;
+    console.log('Total: ', totalPagesCount);
+    if(currentPageCount <= 1) {
+      prevPageBtn.classList.add('disabled');
+    }
+
+    const headerDiv = document.getElementById('header');
+    headerDiv.scrollIntoView({
+      behavior: 'smooth'
+    })
   })
   .catch(err => {
     console.log('Error in fetching movies data: '+ err);
@@ -172,7 +187,7 @@ function noMovies() {
   noResultsDiv.classList.add('no-movie');
   noResultsDiv.innerHTML = `<img src="https://bsmedia.business-standard.com/_media/bs/theme/faq_view_all/images/no-result-found.png" alt="No Results Found">`;
   mainBody.appendChild(noResultsDiv);
-  
+
   return;
 }
 
@@ -230,4 +245,53 @@ form.addEventListener('submit', (event) => {
 
   const url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchTerm}`;
   fetchMovies(url);
+})
+
+nextPageBtn.addEventListener('click', () => {
+  if(currentPageCount + 1 > totalPagesCount) {
+    return;
+  }
+
+  currentPageCount++;
+  let url = '';
+  if(searchBar.value !== '') {
+    url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchBar.value}&page=${currentPageCount}`;
+  } else if(selectedTags.length === 0) {
+    url = `${API_URL}&api_key=${API_KEY}&page=${currentPageCount}`;
+  } else {
+    url = `${API_URL}&api_key=${API_KEY}&page=${currentPageCount}&with_genres=${encodeURI(selectedTags.join(','))}`;
+  }
+  
+  fetchMovies(url);
+  currentPageBtn.innerText = currentPageCount;
+
+  if(currentPageCount > 1) {
+    prevPageBtn.classList.remove('disabled');
+  }
+
+  if(currentPageCount + 1 > totalPagesCount) {
+    nextPageBtn.classList.add('disabled');
+  }
+})
+
+prevPageBtn.addEventListener('click', () => {
+  if(currentPageCount - 1 <= 0) {
+    return;
+  }
+
+  currentPageCount--;
+  let url = '';
+  if(searchBar.value !== '') {
+    url = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${searchBar.value}&page=${currentPageCount}`;
+  } else if(selectedTags.length === 0) {
+    url = `${API_URL}&api_key=${API_KEY}&page=${currentPageCount}`;
+  } else {
+    url = `${API_URL}&api_key=${API_KEY}&page=${currentPageCount}&with_genres=${encodeURI(selectedTags.join(','))}`;
+  }
+  fetchMovies(url);
+  currentPageBtn.innerText = currentPageCount;
+
+  if(currentPageCount <= totalPagesCount) {
+    nextPageBtn.classList.remove('disabled');
+  }
 })
