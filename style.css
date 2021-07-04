@@ -87,6 +87,7 @@ header {
 .tag.selected {
   background-color: var(--red);
 }
+/* ----------------- Genre Filter End ----------------- */
 
 /* -----------------  Main Body Start ----------------- */
 .main-body {
@@ -174,4 +175,35 @@ header {
   background-color: var(--secondary-color);
   border: 3px solid black;
   border-radius: 20px;
+}
+
+/* -----------------  Main Body End ----------------- */
+
+/* -----------------  Pagination Start --------------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem;
+
+}
+
+.page {
+  color: white;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.page.disabled {
+  cursor: not-allowed;
+  color: gray;
+}
+
+.current {
+  border: 3px solid white;
+  border-radius: 50%;
+  padding: 0.5rem 1rem;
+  color: white;
+  font-weight: 700;
+  background-color: var(--secondary-color);
 }
