@@ -39,6 +39,12 @@ header {
   cursor: pointer;
 }
 
+.home-btn:hover {
+  background-color: white;
+  color: var(--primary-color);
+  border: 1px dashed black;
+}
+
 .search {
   padding: 0.5rem 1rem;
   font-family: inherit;
@@ -52,6 +58,7 @@ header {
 .search:focus {
   outline: 0;
   background-color: var(--primary-color);
+  border: 2px solid white;
 }
 
 .search::placeholder {
