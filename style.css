@@ -287,6 +287,17 @@ header {
   font-weight: 700;
   background-color: var(--secondary-color);
 }
+
+@media screen and (max-width: 420px) {
+  .page {
+    width: 100px;
+    text-align: center;
+  }
+
+  .current {
+    margin: 1rem;
+  }
+}
 /* -----------------  Pagination End --------------- */
 
 /* -----------------  Overlay Start --------------- */
