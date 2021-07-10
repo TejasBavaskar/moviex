@@ -337,6 +337,7 @@ function openNav(btnId, movieTitle) {
 /* Close when someone clicks on the "x" symbol inside the overlay */
 function closeNav() {
   document.getElementById("myNav").style.width = "0%";
+  stopCurrentYTVideo();
 }
 
 function showVideos(videoData,movieTitle) {
@@ -358,7 +359,7 @@ function showVideos(videoData,movieTitle) {
   videoData.results.forEach((video, idx) => {
     let {name, site, key} = video;
     if(site === "YouTube") {
-      embed.push(`<iframe class="embed" width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
+      embed.push(`<iframe class="embed" width="560" height="315" src="https://www.youtube.com/embed/${key}?enablejsapi=1" title="${name}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
       dots.push(`<span class="dot">${idx + 1}</span>`);
     }
   })
@@ -407,6 +408,8 @@ leftVideoArrow.addEventListener('click', () => {
   } else {
     activeVideoSlide = totalVideos-1;
   }
+
+  stopCurrentYTVideo();
   showVideoIframes();
 })
 
@@ -416,8 +419,14 @@ rightVideoArrow.addEventListener('click', () => {
   } else {
     activeVideoSlide = 0;
   }
+
+  stopCurrentYTVideo();
   showVideoIframes();
 })
+
+function stopCurrentYTVideo() {
+  document.querySelector('.embed.show').contentWindow.postMessage('{"event":"command","func":"' + 'stopVideo' + '","args":""}', '*');
+}
 
 filterBtn.addEventListener('click', () => {
   const tagsFilterDiv = document.querySelector('.tags-filter');
