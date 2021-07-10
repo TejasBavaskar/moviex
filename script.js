@@ -243,8 +243,7 @@ function showMovies(movieData) {
 
     const knowMoreBtn = document.getElementById(knowMoreBtnId);
     knowMoreBtn.addEventListener('click', () => {
-      console.log('Button clicked...', knowMoreBtnId);
-      openNav(knowMoreBtnId);
+      openNav(knowMoreBtnId, title);
     })
   });
 }
@@ -323,13 +322,13 @@ prevPageBtn.addEventListener('click', () => {
 })
 
 /* Open when someone clicks on the span element */
-function openNav(btnId) {
+function openNav(btnId, movieTitle) {
   const url = `${BASE_URL}/movie/${btnId}/videos?api_key=${API_KEY}`;
   fetch(url)
   .then(res => res.json())
   .then(videoData => {
     console.log('videoData: ', videoData);
-    showVideos(videoData);
+    showVideos(videoData, movieTitle);
   })
   document.getElementById("myNav").style.width = "100%";
 }
@@ -339,7 +338,7 @@ function closeNav() {
   document.getElementById("myNav").style.width = "0%";
 }
 
-function showVideos(videoData) {
+function showVideos(videoData,movieTitle) {
   const overlayContainer = document.getElementById('overlay-container');
   if(videoData.results.length === 0) {
     console.log('No videos found');
@@ -354,15 +353,26 @@ function showVideos(videoData) {
   }
 
   let embed = [];
-  videoData.results.forEach(video => {
+  let dots = [];
+  videoData.results.forEach((video, idx) => {
     let {name, site, key} = video;
     if(site === "YouTube") {
       embed.push(`<iframe class="embed" width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`);
+      dots.push(`<span class="dot">${idx + 1}</span>`);
     }
-
   })
 
-  overlayContainer.innerHTML = embed.join('');
+  let content = `
+                <div class="movie-title">
+                  <h1>${movieTitle}</h1>
+                </div>
+                </br>
+                ${embed.join('')}
+                </br>
+                <div class="dots">${dots.join('')}</div>
+              `;
+
+  overlayContainer.innerHTML = content;
   activeVideoSlide = 0;
   showVideoIframes();
 }
@@ -377,6 +387,15 @@ function showVideoIframes() {
     } else {
       item.classList.remove('show');
       item.classList.add('hide');
+    }
+  })
+
+  const dotsList = document.querySelectorAll('.dot');
+  dotsList.forEach((dot, idx) => {
+    if(activeVideoSlide === idx) {
+      dot.classList.add('active');
+    } else {
+      dot.classList.remove('active');
     }
   })
 }
