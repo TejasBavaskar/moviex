@@ -304,11 +304,22 @@ header {
   transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
 }
 
+.overlay-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  width: 100%;
+  transform: translateX(-50%);
+}
+
 /* Position the content inside the overlay */
 .overlay-content {
   position: relative;
   top: 15%; /* 25% from the top */
-  width: 100%; /* 100% width */
+  width: 560px; /* 100% width */
   text-align: center; /* Centered text/links */
 }
 
@@ -411,5 +422,50 @@ header {
 
 .dots .dot.active {
  border-color: var(--red);
+}
 
+@media screen and (max-width: 420px) {
+  .overlay-content iframe {
+    width: 250px;
+    height: 180px;
+  }
+
+  .overlay-body {
+    top: 22%;
+  }
+
+  .movie-title {
+    font-size: 0.6rem;
+  }
+
+  .overlay svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .overlay svg:hover {
+    transform: scale(1.05);
+  }
+
+  .dots {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+  }
+
+  .dots .dot {
+    margin: 10px;
+  }
+
+  .arrow.right-arrow {
+    right: 1%;
+    top: 40%;
+  }
+
+  .arrow.left-arrow {
+    left: 1%;
+    top: 40%;
+  }
 }
