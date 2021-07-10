@@ -43,6 +43,17 @@ header {
   border: 2px dashed black;
 }
 
+@media screen and (max-width: 420px) {
+  .home-btn {
+    width: 25%;
+  }
+
+  .home-btn:hover {
+    transform: scale(1.1);
+    border: 2px dashed black;
+  }
+}
+
 .search {
   padding: 0.5rem 1rem;
   font-family: inherit;
