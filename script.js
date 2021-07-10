@@ -12,6 +12,7 @@ const currentPageBtn = document.getElementById('current-page');
 const nextPageBtn = document.getElementById('next-page');
 const leftVideoArrow = document.getElementById('left-arrow');
 const rightVideoArrow = document.getElementById('right-arrow');
+const filterBtn = document.getElementById('filter-btn');
 
 let currentPageCount = 1;
 let totalPagesCount = 0;
@@ -416,4 +417,14 @@ rightVideoArrow.addEventListener('click', () => {
     activeVideoSlide = 0;
   }
   showVideoIframes();
+})
+
+filterBtn.addEventListener('click', () => {
+  const tagsFilterDiv = document.querySelector('.tags-filter');
+  
+  if(tagsFilterDiv.classList.contains('active')) {
+    tagsFilterDiv.classList.remove('active');
+  } else {
+    tagsFilterDiv.classList.add('active');
+  }
 })
